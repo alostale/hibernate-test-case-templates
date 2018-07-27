@@ -16,6 +16,7 @@
 package org.hibernate.bugs;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -41,8 +42,8 @@ public class PaddedBatchFetchTestCase extends BaseCoreFunctionalTestCase {
 		configuration.setProperty(AvailableSettings.SHOW_SQL, Boolean.TRUE.toString());
 		configuration.setProperty(AvailableSettings.FORMAT_SQL, Boolean.TRUE.toString());
 
-		configuration.getProperties().setProperty(AvailableSettings.BATCH_FETCH_STYLE, "PADDED");
-		configuration.getProperties().setProperty(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "15");
+		configuration.setProperty(AvailableSettings.BATCH_FETCH_STYLE, "PADDED");
+		configuration.setProperty(AvailableSettings.DEFAULT_BATCH_FETCH_SIZE, "15");
 
 		// configuration.setProperty( AvailableSettings.GENERATE_STATISTICS, "true" );
 	}
@@ -73,11 +74,12 @@ public class PaddedBatchFetchTestCase extends BaseCoreFunctionalTestCase {
 		// Let's create 11 countries so batch size 15 will be used with padded values,
 		// this causes to have to remove 4 elements from list
 		int numberOfCountries = 11;
-		for (int i = 0; i < numberOfCountries; i++) {
+
+		IntStream.range(0, numberOfCountries).forEach(i -> {
 			Country c = new Country("Country-" + i);
 			s.save(c);
 			s.save(new City("City" + i, c));
-		}
+		});
 
 		tx.commit();
 		s.close();
