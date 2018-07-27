@@ -57,7 +57,9 @@ public class PaddedBatchFetchTestCase extends BaseCoreFunctionalTestCase {
 
 		List<City> allCities = s.createQuery("from City", City.class).list();
 
+		// this triggers countries to be fetched in batch
 		System.out.println(allCities.get(0).getCountry().getName());
+
 		tx.commit();
 		s.close();
 	}
